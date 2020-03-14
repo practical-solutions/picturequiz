@@ -1,4 +1,4 @@
-# PictureQuit
+# PictureQuiz
 
 Aktuell nur eine Code-Sicherung. Ursprünglich ein WP-Plugin, diese Fassung dann eingebettet in DokuWIki, aber nicht als 
 Plugin in. Ziele

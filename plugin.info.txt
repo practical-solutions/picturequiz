@@ -1,7 +1,7 @@
 ﻿base   picturequiz
 author Gero Gothe
 email  practical@medizin-lernen.de
-date   2020-06-xx
+date   2020-06-06
 name   Picture Quiz
 desc   Quiz for descriptions on images
 url    https://github.com/practical-solutions/picturequiz

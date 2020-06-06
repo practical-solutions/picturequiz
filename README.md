@@ -1,26 +1,38 @@
-# PictureQuiz
+# DokuWiki-Plugin: PictureQuiz
 
-Aktuell nur eine Code-Sicherung. Ursprünglich ein WP-Plugin, diese Fassung dann eingebettet in DokuWIki, aber nicht als 
-Plugin in. Ziele
-* echtes WP-Plugin daraus erstellen
-* echts DW-Plugin erstellen
-* Ablage der Metadaten in einer PNG selbst.
+Bilder können mit verdeckten Bereichen versehen werden, die per Mausklick aufgedeckt werden.
 
-## Einbettung in DokuWiki
+## Usage
 
-Die `picquiz.php`-Datei war im DW-Stammverzeichnis. Die sonstigen Datein unter `/picturequiz/` abgelegt. Einbettung in DokuWiki dann 
-über
+The coding area mus be enclosed with the ``<picturequiz>...</picturequiz>``-Tags.
+
+The following options can be used:
+* ``image:`` - image file (in DokuWiki-syntax)
+* ``button: `` - draws a button (rectangle) between the stated coordinates
+* ``edit_mode`` - display a helping text area to design buttons - optional
+* ``hide_button`` - hide text over buttons - options
+
+Example:
+
 ```
-<php>
-$pic = "uterus-gefaesse1.txt";
-$edit="no";
+<picturequiz>
+image: wiki:example.png
 
-include "picturequiz/show.php";
-</php>
+button: [x],[y],[x2],[y2]
+
+edit_mode
+
+hide_button_text
+
+</picturequiz>
 ```
-auf der Seite.
 
-## Ablage der Metadaten in einer PNG
+## Ideen / Verbesserungen
+
+* Code CleanUp
+* Sprachdateien
+
+### Ausblick: Ablage der Metadaten in einer PNG?
 
 Recherche bisher:
 * https://stackoverflow.com/questions/25528264/appending-a-png-phys-chunk-in-php/46541839#46541839

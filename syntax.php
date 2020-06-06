@@ -4,14 +4,13 @@
 if(!defined('DOKU_INC')) die();
 
 /**
- * medcalc
+ * PictureQuiz
  *
  * @license  MIT
  * @author   Gero Gothe
  */
 class syntax_plugin_picturequiz extends DokuWiki_Syntax_Plugin {
 
-    
     public function getType() {
         return 'substition';
     }
@@ -23,60 +22,45 @@ class syntax_plugin_picturequiz extends DokuWiki_Syntax_Plugin {
         return 'block';
     }
 
-    
-
     /**
      * @param string $mode
      */
     public function connectTo($mode) {
-        #$this->Lexer->addSpecialPattern('<picturequiz>*<\/picturequiz>', $mode, 'plugin_picturequiz');
         $this->Lexer->addSpecialPattern('<picturequiz>.*?</picturequiz>', $mode, 'plugin_picturequiz');
     }
 
     /**
      * Handler to prepare matched data for the rendering process
-     *
     */
     public function handle($match, $state, $pos, Doku_Handler $handler) {
-        
-        
-        
-        
         return trim($match);
     }
-    
-    
-    
 
     /**
-     * Create the new-page form.
-     *
      * @param   $mode     string        output format being rendered
      * @param   $renderer Doku_Renderer the current renderer object
      * @param   $data     array         data created by handler()
      * @return  boolean                 rendered correctly?
      */
     public function render($mode, Doku_Renderer $renderer, $data) {
-        global $lang;
         
         if($mode == 'xhtml') {
-            
-            
-            
-            
-            
-            #----------------------------------------
-            
+
             # Necessary for multiple instances on one page
             global $tagged_quiz_instances;
             $tagged_quiz_instances++;
             
-            $t = $tagged_quiz_instances-1;
+            $t = $tagged_quiz_instances-1; # this instance nr (important!)
             
-            $lines = explode("\n",$data);
-            
-            $image = '';
-            $buttons = Array();
+            $lines = explode("\n",$data); # the data is checked line by line
+
+            # The variables to check
+            $image        = '';            # the image
+            $buttons      = Array();       # the buttons
+            $edit         = false;         # edit mode?
+            $hide_btn_txt = false;
+            $min_width    = null;          # smallest width to which the image is scaled, before overflow is activated
+            $overflow     = false;
             
             foreach ($lines as $l) {
             
@@ -91,66 +75,49 @@ class syntax_plugin_picturequiz extends DokuWiki_Syntax_Plugin {
                     $l = trim(substr($l,7));
                     $buttons[] = $l;
                 }
+                
+                # Edit mode?
+                if (strpos($l,"edit_mode")===0) $edit = true;
+                
+                # Hide Button Text
+                if (strpos($l,"hide_button_text")===0) $hide_btn_txt = true;
+                
+                # Minimum image width
+                if (strpos($l,"min_width:")===0) {
+                    $i = intval(substr($l,10));
+                    if ($i>0) $min_width = $i;$overflow=true;
+                }
             
             }
             
 
-            # Create code
+            # Include basic javascript object definition once when creating the first instance
+            if ($t==0) $renderer->doc .= "<script>" . (file_get_contents(DOKU_PLUGIN."/picturequiz/picture.js")) . "</script>";
             
-            $data = '
-                     <div class="tagged_image_container" style="'.($edit || $overflow? "overflow:auto":"").'">
-                        <canvas id="quizCanvas" style="'. ($edit? "":"max-width:100%;") . ($min_width == null? "":"min-width:".$min_width.';').'">
-                        </canvas>
-                     </div>
-                    ';
-            
-            if ($t==0) $data .= "<script>" . (file_get_contents(DOKU_PLUGIN."/picturequiz/picture.js")) . "</script>";
-            
-            
-            $data.= '
-			<script>
-				tagged_image_instance++;
-     
-				document.getElementById("quizCanvas").setAttribute("id", "quizCanvas"+tagged_image_instance);
-				
-				
-				tagged_image_canvas.push(document.getElementById("quizCanvas"+tagged_image_instance));
-				tagged_image_context.push(tagged_image_canvas[tagged_image_instance].getContext("2d"));
-				tagged_image_pic.push(new Image());
+            # Buttons
+            for ($c=0;$c<count($buttons);$c++) {
+                $btn_code .= 'tagged_image_main[tagged_image_instance].add_button('.($buttons[$c]).");\n    ";
+            }
 
-				tagged_image_main.push(new tagged_img(tagged_image_canvas[tagged_image_instance], 		tagged_image_pic[tagged_image_instance]));
-				tagged_image_main[tagged_image_instance].editMode = '.($edit? "true":"false").';
-				tagged_image_main[tagged_image_instance].show_btn_caption = '.($hide_btn_txt? "true":"false").';
-			';
-				
-				
-	for ($c=0;$c<count($buttons);$c++) {
-		$data.= 'tagged_image_main[tagged_image_instance].add_button('.($buttons[$c]).');';
-	}
-	
-	$data.= '
-				tagged_image_pic[tagged_image_instance].onload = function() {
-					tagged_image_canvas['.$t.'].width = tagged_image_pic['.$t.'].width;
-					tagged_image_canvas['.$t.'].height = tagged_image_pic['.$t.'].height;
-					tagged_image_main['.$t.'].fullWidth = tagged_image_pic['.$t.'].width;
-					
-					tagged_image_main['.$t.'].paint();
-				};
+            $replacements = Array (
+                                    '%OVERFLOW%' => ($edit || $overflow? "overflow:auto":""),
+                                    '%MAXWIDTH%' => ($edit? "":"max-width:100%;"),
+                                    '%MINWIDTH%' => ($min_width == null? "":"min-width:".$min_width.'px;'),
+                                    '%EDITMODE%' => ($edit? "true":"false"),
+                                    '%EDITDISP%' => ($edit? "":"display:none;"),
+                                    '%HIDEBTXT%' => ($hide_btn_txt? "false":"true"),
+                                    '%NR%'       => $t,
+                                    '%BUTTONS%'  => $btn_code,
+                                    '%IMAGE%'    => $image
+                                   );
 
-				tagged_image_canvas[tagged_image_instance].addEventListener("click", function(evt) {      
-					if (tagged_image_main['.$t.'].editMode) writeMessage(tagged_image_canvas['.$t.'],evt,document.getElementById("code"+'.$t.'));
-					tagged_image_main['.$t.'].click(evt,tagged_image_canvas['.$t.'].clientWidth);
-				}, false);
+            $inc = file_get_contents(DOKU_PLUGIN."/picturequiz/basic.html");
+            
+            foreach ($replacements as $key => $value) {
+                $inc = str_replace($key,$value,$inc);
+            }
 
-				tagged_image_pic[tagged_image_instance].src="'.$image.'";
-				
-				'.($quelle<>""? 'tagged_image_main[tagged_image_instance].addQuelle("'.$quelle.'");':"").'
-			</script>';
-            
-            
-            $renderer->doc .= "$data";
-            
-            #----------------------------------------
+            $renderer->doc .= $inc;
             
             return true;
         }

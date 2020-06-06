@@ -1,0 +1,39 @@
+<div style="%EDITDISP%">
+    Press '#' to type "button:". Click on image to type coordinates.
+    <textarea style="width:100%;" id="code%NR%" onkeyup="javascript:setTags('code%NR%');" rows="5"></textarea>
+</div>
+
+<div class="tagged_image_container" style="%OVERFLOW%">
+    <canvas id="quizCanvas" style="%MAXWIDTH% %MINWIDTH%">
+    </canvas>
+</div>
+
+<script>
+    tagged_image_instance++;
+
+    document.getElementById("quizCanvas").setAttribute("id", "quizCanvas"+tagged_image_instance);
+
+    tagged_image_canvas.push(document.getElementById("quizCanvas"+tagged_image_instance));
+    tagged_image_context.push(tagged_image_canvas[tagged_image_instance].getContext("2d"));
+    tagged_image_pic.push(new Image());
+
+    tagged_image_main.push(new tagged_img(tagged_image_canvas[tagged_image_instance], tagged_image_pic[tagged_image_instance]));
+    tagged_image_main[tagged_image_instance].editMode = %EDITMODE%;
+    tagged_image_main[tagged_image_instance].show_btn_caption = %HIDEBTXT%;
+    
+    %BUTTONS%
+    
+    tagged_image_pic[tagged_image_instance].onload = function() {
+        tagged_image_canvas[%NR%].width = tagged_image_pic[%NR%].width;
+        tagged_image_canvas[%NR%].height = tagged_image_pic[%NR%].height;
+        tagged_image_main[%NR%].fullWidth = tagged_image_pic[%NR%].width;
+        tagged_image_main[%NR%].paint();
+    };
+
+    tagged_image_canvas[tagged_image_instance].addEventListener("click", function(evt) {
+        if (tagged_image_main[%NR%].editMode) writeMessage(tagged_image_canvas[%NR%],evt,document.getElementById("code"+%NR%));
+        tagged_image_main[%NR%].click(evt,tagged_image_canvas[%NR%].clientWidth);
+    }, false);
+
+    tagged_image_pic[tagged_image_instance].src="%IMAGE%";
+</script>'

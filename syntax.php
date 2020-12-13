@@ -1,16 +1,22 @@
 <?php
 
-// must be run within Dokuwiki
-if(!defined('DOKU_INC')) die();
-
 /**
  * PictureQuiz
  *
- * @license  MIT
+ * @license  GPL2
  * @author   Gero Gothe
  */
+ 
+// must be run within Dokuwiki
+if(!defined('DOKU_INC')) die();
+
 class syntax_plugin_picturequiz extends DokuWiki_Syntax_Plugin {
 
+    
+    function getSort(){
+        return 300;
+    }
+    
     public function getType() {
         return 'substition';
     }

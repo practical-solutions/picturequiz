@@ -1,10 +1,12 @@
 # DokuWiki-Plugin: PictureQuiz
 
-Bilder können mit verdeckten Bereichen versehen werden, die per Mausklick aufgedeckt werden.
+Cover up parts of an image which can be uncoverd per click.
+
+![](screenshot.gif)
 
 ## Usage
 
-The coding area mus be enclosed with the ``<picturequiz>...</picturequiz>``-Tags.
+The coding area must be enclosed with the ``<picturequiz>...</picturequiz>``-Tags.
 
 The following options can be used:
 * ``image:`` - image file (in DokuWiki-syntax)
@@ -27,13 +29,19 @@ hide_button_text
 </picturequiz>
 ```
 
-## Ideen / Verbesserungen
+## Compatibility
+
+Tested with
+* PHP **7.3**
+* DokuWiki / **Hogfather**
+
+## Ideas
 
 * Code CleanUp
-* Sprachdateien
-* ``quelle:``-Tag
+* Translations
+* ``source:``-Tag
 
-### Ausblick: Ablage der Metadaten in einer PNG?
+### Store Medadata in a png file?
 
-Recherche bisher:
+Ideas / Inspiration:
 * https://stackoverflow.com/questions/25528264/appending-a-png-phys-chunk-in-php/46541839#46541839

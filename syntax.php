@@ -93,6 +93,9 @@ class syntax_plugin_picturequiz extends DokuWiki_Syntax_Plugin {
                     $i = intval(substr($l,10));
                     if ($i>0) $min_width = $i;$overflow=true;
                 }
+                
+                # Show unfilled rectangle on start
+                if (strpos($l,"uncovered")===0) $uncovered = true;
             
             }
             
@@ -103,6 +106,7 @@ class syntax_plugin_picturequiz extends DokuWiki_Syntax_Plugin {
             # Buttons
             for ($c=0;$c<count($buttons);$c++) {
                 $btn_code .= 'tagged_image_main[tagged_image_instance].add_button('.($buttons[$c]).");\n    ";
+                if ($uncovered) $btn_code .= 'tagged_image_main[tagged_image_instance].button['.$c.'].visible = false;'."\n    ";
             }
 
             $replacements = Array (

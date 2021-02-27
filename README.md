@@ -13,6 +13,8 @@ The following options can be used:
 * ``button: `` - draws a button (rectangle) between the stated coordinates
 * ``edit_mode`` - display a helping text area to design buttons - optional
 * ``hide_button`` - hide text over buttons - options
+* ``uncovered`` - on start all boxes are uncovered
+* ``min_width`` - minimum width of the image (by default the image is sized to fit the screen). Can also be used to zoom images.
 
 Example:
 

@@ -49,8 +49,9 @@ function canvas_button(){
             
         } else {
             //context_obj.globalAlpha = 0.2;
+            context_obj.strokeStyle = 'red';
             context_obj.beginPath();        
-            context_obj.lineWidth = 1;
+            context_obj.lineWidth = 3;
             //context_obj.fillStyle = "yellow";
             //context_obj.fillRect(this.loc[0], this.loc[1],this.loc[2]-this.loc[0],this.loc[3]-this.loc[1]);
             context_obj.rect(this.loc[0], this.loc[1],this.loc[2]-this.loc[0],this.loc[3]-this.loc[1]);
@@ -151,6 +152,8 @@ function tagged_img(canvasObj,image){
     this.editMode = false;
     
     this.show_btn_caption = true;
+    
+    this.uncovered = false;
     
     this.quelle = "";
     this.addQuelle = function(q) {
